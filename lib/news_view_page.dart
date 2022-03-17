@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/home_page.dart';
-
-class NewsInfoModel {
-  final String? imageURL;
-  final String title;
-  final DateTime dateTime;
-  final String? content;
-  final String? author;
-  const NewsInfoModel({
-    this.imageURL,
-    required this.title,
-    required this.dateTime,
-    this.content,
-    this.author,
-  });
-}
+import 'package:news_app/constants/palette.dart';
+import 'package:news_app/models/news_info_model.dart';
+import 'package:news_app/pages/home_page.dart';
 
 final NewsInfoModel dummyNewsInfoModel = NewsInfoModel(
   title: "Some news title",
