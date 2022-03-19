@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/constants/palette.dart';
 import 'package:news_app/models/news_info_model.dart';
-import 'package:news_app/pages/home_page.dart';
 
 final NewsInfoModel dummyNewsInfoModel = NewsInfoModel(
   title: "Some news title",

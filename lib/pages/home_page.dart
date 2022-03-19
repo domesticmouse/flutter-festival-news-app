@@ -1,10 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/constants/palette.dart';
-import 'package:news_app/constants/strings.dart';
-import 'package:news_app/models/news_info_model.dart';
-import 'package:news_app/news_view_page.dart';
+import 'package:news_app/notifiers/news_notifier.dart';
 import 'package:news_app/pages/components/news_card.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,42 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const String imageURL =
-      "https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
-
-  static final Dio dio = Dio();
-
-  Future<List<NewsInfoModel>> getNews({String? searchKeyWord}) async {
-    List<NewsInfoModel> newsInfoModelList = [];
-
-    final Response response = await dio.get(
-      searchKeyWord != null ? Strings.apiEverything : Strings.apiTopHeadlines,
-      queryParameters: {
-        'apiKey': Strings.API_KEY,
-        if (searchKeyWord == null) 'country': 'us',
-        if (searchKeyWord != null) 'q': searchKeyWord,
-      },
-    );
-
-    Map<String, dynamic> map = response.data;
-    List list = map['articles'];
-    List<Map<String, dynamic>> mapList =
-        list.map((e) => e as Map<String, dynamic>).toList();
-
-    newsInfoModelList = mapList.map((m) {
-      return NewsInfoModel.fromMap(m);
-    }).toList();
-
-    return newsInfoModelList;
-  }
-
-  late Future<List<NewsInfoModel>> _future;
-
   @override
   void initState() {
     super.initState();
 
-    _future = getNews();
+    context.read<NewsNotifier>().getNews(isInit:  true);
   }
 
   @override
@@ -75,13 +42,11 @@ class _HomePageState extends State<HomePage> {
           children: [
             TextField(
               onSubmitted: (str) {
-                setState(() {
-                  if (str.isEmpty) {
-                    _future = getNews();
-                  } else {
-                    _future = getNews(searchKeyWord: str);
-                  }
-                });
+                if (str.isEmpty) {
+                  context.read<NewsNotifier>().getNews();
+                } else {
+                  context.read<NewsNotifier>().getNews(searchKeyWord: str);
+                }
               },
               cursorColor: Palette.deepBlue,
               style: const TextStyle(
@@ -117,20 +82,19 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: FutureBuilder<List<NewsInfoModel>>(
-                future: _future,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return ListView.builder(
-                      itemCount:
-                          snapshot.data != null ? snapshot.data!.length : 0,
-                      itemBuilder: (context, index) {
-                        return NewsCard(newsInfoModel: snapshot.data![index]);
-                      },
-                    );
-                  } else {
+              child: Consumer<NewsNotifier>(
+                builder: (context, notifier, child) {
+                  if (notifier.isLoading) {
                     return const Center(
                       child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return ListView.builder(
+                      itemCount: notifier.newsInfoModelList.length,
+                      itemBuilder: (context, index) {
+                        return NewsCard(
+                            newsInfoModel: notifier.newsInfoModelList[index]);
+                      },
                     );
                   }
                 },
