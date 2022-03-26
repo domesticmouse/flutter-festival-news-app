@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/firebase_options.dart';
+import 'package:news_app/notifiers/auth_notifier.dart';
 import 'package:news_app/notifiers/news_notifier.dart';
 import 'package:news_app/pages/home_page.dart';
+import 'package:news_app/wrapper.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -15,6 +21,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => NewsNotifier()),
+        ChangeNotifierProvider(create: (context) => AuthNotifier()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -22,7 +29,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const HomePage(),
+        home: const Wrapper(),
       ),
     );
   }

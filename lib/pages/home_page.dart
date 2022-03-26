@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/constants/palette.dart';
+import 'package:news_app/notifiers/auth_notifier.dart';
 import 'package:news_app/notifiers/news_notifier.dart';
 import 'package:news_app/pages/components/news_card.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    context.read<NewsNotifier>().getNews(isInit:  true);
+    context.read<NewsNotifier>().getNews(isInit: true);
   }
 
   @override
@@ -34,6 +35,17 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<AuthNotifier>().signOut();
+            },
+            icon: const Icon(
+              Icons.logout,
+              color: Palette.deepBlue,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
