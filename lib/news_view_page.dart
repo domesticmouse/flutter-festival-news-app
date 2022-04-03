@@ -57,7 +57,13 @@ class NewsViewPage extends StatelessWidget {
                 height: 300,
                 color: Palette.lightGrey,
                 child: newsInfoModel.imageURL != null
-                    ? Hero(tag: newsInfoModel.imageURL!, child: Image.network(newsInfoModel.imageURL!, fit: BoxFit.cover))
+                    ? Hero(
+                        tag: newsInfoModel.imageURL!,
+                        child: Image.network(
+                          newsInfoModel.imageURL!,
+                          fit: BoxFit.cover,
+                        ),
+                      )
                     : Container(),
               ),
               const SizedBox(height: 16),

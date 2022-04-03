@@ -32,7 +32,13 @@ class NewsCard extends StatelessWidget {
               width: MediaQuery.of(context).size.width - (2 * 16),
               color: Palette.lightGrey,
               child: newsInfoModel.imageURL != null
-                  ? Hero(tag: newsInfoModel.imageURL!, child: Image.network(newsInfoModel.imageURL!, fit: BoxFit.cover))
+                  ? Hero(
+                      tag: newsInfoModel.imageURL!,
+                      child: Image.network(
+                        newsInfoModel.imageURL!,
+                        fit: BoxFit.cover,
+                      ),
+                    )
                   : Container(),
             ),
             Positioned(
